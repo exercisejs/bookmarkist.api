@@ -5,6 +5,8 @@ var express = require('express'),
     fs = require('fs'),
     mongoose = require('mongoose');
 
+require('./config/errors');
+
 /**
  * Main application file
  */

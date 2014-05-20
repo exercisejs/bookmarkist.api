@@ -4,7 +4,7 @@ var morgan = require('morgan'),
     compression = require('compression'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
-    errorHandler = require('errorhandler');
+    errorHandler = require('./errorhandler');
 
 /**
  * Express configuration
@@ -24,8 +24,8 @@ module.exports = function(app) {
   app.use(bodyParser());
   app.use(methodOverride());
 
+  require('./routes')(app);
+
   // Error handler - has to be last
-  if ('development' === app.get('env')) {
-    app.use(errorHandler());
-  }
+  app.use(errorHandler());
 };

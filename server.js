@@ -30,7 +30,6 @@ fs.readdirSync(modelsPath).forEach(function (file) {
 // Setup Express
 var app = express();
 require('./config/express')(app);
-require('./config/routes')(app);
 
 // Start server
 app.listen(config.port, config.ip, function () {

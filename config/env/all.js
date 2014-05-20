@@ -14,5 +14,9 @@ module.exports = {
         safe: true
       }
     }
+  },
+  token: {
+    secret: 'bookmarkist',
+    expiresInMinutes: 1000
   }
 };

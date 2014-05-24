@@ -1,9 +1,10 @@
 'use strict';
 
 var users = require('../controllers/users'),
+    common = require('../controllers/common'),
     session = require('../controllers/session'),
-    preloading = require('./middlewares/preloading.js'),
-    authorization = require('./middlewares/authorization.js');
+    preloading = require('./middlewares/preloading'),
+    authorization = require('./middlewares/authorization');
 
 var requiresMe = preloading.requiresMe;
 var requiresLogin = authorization.requiresLogin;
@@ -13,6 +14,9 @@ var isSelf = authorization.isSelf;
  * Application routes
  */
 module.exports = function(app) {
+  app.route('/status')
+    .get(common.status);
+
   app.route('/users')
     .get(requiresLogin, users.list)
     .post(users.create);
@@ -28,7 +32,5 @@ module.exports = function(app) {
     .delete(requiresLogin, session.logout);
 
   app.route('*')
-    .get(function(req, res) {
-      res.send(404);
-    });
+    .get(common.notFound);
 };

@@ -32,7 +32,7 @@ module.exports = function (grunt) {
       express: {
         files: [
           'server.js',
-          '{config,controllers,models}/**/*.{js,json}'
+          '{config,controllers,middlewares,models,routes}/**/*.{js,json}'
         ],
         tasks: ['newer:jshint', 'express:dev', 'wait'],
         options: {
@@ -48,12 +48,10 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc',
         reporter: require('jshint-stylish')
       },
-      server: {
-        src: [
-          'server.js',
-          '{config,controllers,models}/**/*.{js}'
-        ]
-      }
+      all: [
+        'server.js',
+        '{config,controllers,middlewares,models,routes}/**/*.{js}'
+      ]
     },
 
     // Debugging with node inspector
@@ -105,7 +103,8 @@ module.exports = function (grunt) {
 
     mochaTest: {
       options: {
-        reporter: 'spec'
+        reporter: 'spec',
+        require: 'server.js'
       },
       src: ['test/**/*.js']
     },
@@ -130,6 +129,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('serve', [
+    'newer:jshint',
     'express:dev',
     'watch'
   ]);

@@ -1,13 +1,13 @@
 'use strict';
 
-var User = require('../models/user'),
-  jwt = require('jsonwebtoken'),
-  config = require('../config/config');
+var jwt = require('jsonwebtoken'),
+    User = localrequire.model('user'),
+    config = localrequire.config();
 
-exports.me = function(req, res) {
+exports.me = function(req, res, next) {
   var me = req.me;
 
-  res.json({
+  res.finish({
     user: me
   });
 };
@@ -26,8 +26,9 @@ exports.login = function(req, res, next) {
     });
 
     res.setHeader('Auth-Token', token);
+    res.setToken(token);
 
-    res.json({
+    res.finish({
       user: user
     });
   }).catch(function(err) {
@@ -35,6 +36,6 @@ exports.login = function(req, res, next) {
   });
 };
 
-exports.logout = function(req, res) {
-  res.json({});
+exports.logout = function(req, res, next) {
+  res.finish();
 };

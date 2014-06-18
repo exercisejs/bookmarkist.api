@@ -1,31 +1,32 @@
 'use strict';
 
-var morgan = require('morgan'),
+var express = require('express'),
+    morgan = require('morgan'),
     compression = require('compression'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
-    errorHandler = require('./errorhandler');
+    config = localrequire.config();
 
-/**
- * Express configuration
- */
-module.exports = function(app) {
-  var env = app.get('env');
+var app = express();
 
-  if ('development' === env) {
-    app.use(require('connect-livereload')());
-  }
+var env = app.get('env');
 
-  if ('production' === env) {
-    app.use(compression());
-  }
+if ('development' === env) {
+  app.use(require('connect-livereload')());
+}
 
-  app.use(morgan('dev'));
-  app.use(bodyParser());
-  app.use(methodOverride());
+if ('production' === env) {
+  app.use(compression());
+}
 
-  require('./routes')(app);
+app.use(morgan('dev'));
+app.use(bodyParser());
+app.use(methodOverride());
 
-  // Error handler - has to be last
-  app.use(errorHandler());
-};
+require('./routes')(app);
+
+app.listen(config.port, config.ip, function () {
+  console.log('Express server listening on %s:%d, in %s mode', config.ip, config.port, app.get('env'));
+});
+
+module.exports = app;

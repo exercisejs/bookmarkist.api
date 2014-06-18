@@ -1,15 +1,15 @@
 'use strict';
 
-var User = require('../models/user'),
-  jwt = require('jsonwebtoken'),
-  config = require('../config/config');
+var jwt = require('jsonwebtoken'),
+    User = localrequire.model('user'),
+    config = localrequire.config();
 
 exports.list = function(req, res, next) {
   User.list({
     offset: req.query.offset,
     limit: req.query.limit
   }).then(function(users) {
-    res.json({
+    res.finish({
       users: users
     });
   }).catch(function(err) {
@@ -20,7 +20,7 @@ exports.list = function(req, res, next) {
 exports.read = function(req, res, next) {
   User.read(req.params.user)
   .then(function(user) {
-    res.json({
+    res.finish({
       user: user
     });
   }).catch(function(err) {
@@ -39,8 +39,9 @@ exports.create = function(req, res, next) {
     });
 
     res.setHeader('Auth-Token', token);
+    res.setToken(token);
 
-    res.json({
+    res.finish({
       user: user
     });
   }).catch(function(err) {
@@ -53,7 +54,7 @@ exports.update = function(req, res, next) {
 
   User.update(req.body)
   .then(function(user) {
-    res.json({
+    res.finish({
       user: user
     });
   }).catch(function(err) {
@@ -64,7 +65,7 @@ exports.update = function(req, res, next) {
 exports.delete = function(req, res, next) {
   User.delete(req.params.user)
   .then(function(user) {
-    res.json({
+    res.finish({
       user: user
     });
   }).catch(function(err) {

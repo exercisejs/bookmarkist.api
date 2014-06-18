@@ -1,8 +1,8 @@
 'use strict';
 
 var should = require('should'),
-    app = require('../../server'),
-    request = require('supertest');
+    request = require('supertest'),
+    app = localrequire.express();
 
 var token;
 var id;
@@ -28,6 +28,7 @@ var create = function() {
           name: 'Test User',
           phone: '010-1234-5678'
         });
+        should.exist(res.body.token);
         token = res.get('Auth-Token');
         id = res.body.user.id;
         done();
@@ -78,6 +79,7 @@ describe('Session APIs', function() {
             name: 'Test User',
             phone: '010-1234-5678'
           });
+          should.exist(res.body.token);
           token = res.get('Auth-Token');
           done();
         });

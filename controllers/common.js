@@ -1,14 +1,7 @@
 'use strict';
 
-exports.status = function(req, res) {
-  res.json({
+exports.status = function(req, res, next) {
+  res.finish({
     status: 'OK'
   });
-};
-
-exports.notFound = function(req, res, next) {
-  next(Error.new({
-    code: 'NOT_FOUND',
-    message: 'No resource for url:' + req.path + ' is found.'
-  }));
 };

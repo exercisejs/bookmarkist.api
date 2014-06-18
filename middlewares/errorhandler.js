@@ -1,7 +1,7 @@
 'use strict';
 
-var status = function(code) {
-  switch (code) {
+var status = function(err) {
+  switch (err.code) {
     case 'UNAUTHORIZED':
       return 401;
     case 'FORBIDDEN':
@@ -16,6 +16,10 @@ var status = function(code) {
     case 'FORMAT_INVALID':
       return 400;
     default:
+      if (process.env.NODE_ENV === 'test') {
+        console.log(err);
+        console.log(err.stack);
+      }
       return 500;
   }
 };
@@ -23,7 +27,7 @@ var status = function(code) {
 exports = module.exports = function errorHandler() {
   /* jshint unused: false */
   return function errorHandler(err, req, res, next) {
-    res.statusCode = status(err.code);
+    res.statusCode = status(err);
     var error = { message: err.message };
     for (var prop in err) error[prop] = err[prop];
     var json = JSON.stringify({ error: error });

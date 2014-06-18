@@ -1,36 +1,32 @@
 'use strict';
 
-var users = require('../controllers/users'),
-    common = require('../controllers/common'),
-    session = require('../controllers/session'),
-    preloading = require('./middlewares/preloading'),
-    authorization = require('./middlewares/authorization');
+var errorHandler = localrequire.middleware('errorhandler');
 
-var requiresMe = preloading.requiresMe;
-var requiresLogin = authorization.requiresLogin;
-var isSelf = authorization.isSelf;
-
-/**
- * Application routes
- */
 module.exports = function(app) {
-  app.route('/status')
-    .get(common.status);
+  app.use(function(req, res, next) {
+    res.setToken = function(token) {
+      res.token = token;
+    };
 
-  app.route('/users')
-    .get(requiresLogin, users.list)
-    .post(users.create);
+    res.finish = function(data) {
+      data = data || {};
+      if (res.token) data.token = res.token;
+      res.json(data);
+    };
 
-  app.route('/users/:user')
-    .get(requiresLogin, users.read)
-    .put(requiresLogin, isSelf, users.update)
-    .delete(requiresLogin, isSelf, users.delete);
+    next();
+  });
 
-  app.route('/session')
-    .get(requiresLogin, requiresMe, session.me)
-    .post(session.login)
-    .delete(requiresLogin, session.logout);
+  localrequire.routes(function(route) {
+    route(app);
+  });
 
-  app.route('*')
-    .get(common.notFound);
+  app.use(function(req, res, next) {
+    next(Error.new({
+      code: 'NOT_FOUND',
+      message: 'No resource for url:' + req.path + ' is found.'
+    }));
+  });
+
+  app.use(errorHandler());
 };

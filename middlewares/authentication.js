@@ -1,7 +1,7 @@
 'use strict';
 
 var jwt = require('jsonwebtoken'),
-    config = require('../config');
+    config = localrequire.config();
 
 exports.requiresLogin = function(req, res, next) {
   if (req.headers && req.headers.authorization) {
@@ -30,19 +30,3 @@ exports.requiresLogin = function(req, res, next) {
     }));
   }
 };
-
-var hasAuthorization = exports.hasAuthorization = function(checker, message) {
-  return function(req, res, next) {
-    if (!checker(req)) {
-      return next(Error.new({
-        code: 'FORBIDDEN',
-        message: message || 'User is not authorized.'
-      }));
-    }
-    next();
-  };
-};
-
-exports.isSelf = hasAuthorization(function(req) {
-  return req.params.user === req.login.id;
-}, 'You are trying to update/delete other user, not you.');

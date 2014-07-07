@@ -2,20 +2,17 @@
 
 module.exports = {
   env: 'production',
-  ip:   process.env.OPENSHIFT_NODEJS_IP ||
-        process.env.IP ||
-        '0.0.0.0',
-  port: process.env.OPENSHIFT_NODEJS_PORT ||
-        process.env.PORT ||
-        8080,
+  ip: process.env.IP || '0.0.0.0',
+  port: process.env.PORT || 8080,
   mongo: {
-    uri: process.env.MONGOLAB_URI ||
-         process.env.MONGOHQ_URL ||
-         process.env.OPENSHIFT_MONGODB_DB_URL+process.env.OPENSHIFT_APP_NAME ||
-         'mongodb://localhost/bookmarkist'
+    uri: process.env.MONGODB_URL || 'mongodb://localhost/bookmarkist'
+  },
+  redis: {
+    ip: process.env.REDIS_IP || 'localhost',
+    port: process.env.REDIS_PORT || 6379
   },
   token: {
     secret: 'bookmarkist',
-    expiresInMinutes: 1000
+    expiresInMinutes: 60 * 24 * 365
   }
 };

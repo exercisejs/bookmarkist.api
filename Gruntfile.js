@@ -106,7 +106,9 @@ module.exports = function (grunt) {
         reporter: 'spec',
         require: 'server.js'
       },
-      src: ['test/**/*.js']
+      common: ['test/**/*common*.js'],
+      user: ['test/**/*user*.js'],
+      session: ['test/**/*session*.js']
     },
 
     env: {
@@ -138,11 +140,13 @@ module.exports = function (grunt) {
     'concurrent:debug'
   ]);
 
-  grunt.registerTask('test', [
-    'newer:jshint',
-    'env:test',
-    'mochaTest'
-  ]);
+  grunt.registerTask('test', function(target) {
+    return grunt.task.run([
+      'newer:jshint',
+      'env:test',
+      'mochaTest' + (target ? ':' + target : '')
+    ]);
+  });
 
   grunt.registerTask('default', [
     'serve'

@@ -1,10 +1,21 @@
 'use strict';
 
-var errorHandler = localrequire.middleware('errorhandler');
+var cors = localrequire.middleware('cors'),
+    errorHandler = localrequire.middleware('errorhandler');
 
 module.exports = function(app) {
+  app.use(cors({
+    origin: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Auth-Token'],
+    credentials: true,
+    maxAge: 86400
+  }));
+
   app.use(function(req, res, next) {
     res.setToken = function(token) {
+      res.setHeader('Auth-Token', token);
       res.token = token;
     };
 
@@ -22,10 +33,7 @@ module.exports = function(app) {
   });
 
   app.use(function(req, res, next) {
-    next(Error.new({
-      code: 'NOT_FOUND',
-      message: 'No resource for url:' + req.path + ' is found.'
-    }));
+    next(Errors.ApiNotFound('No resource for url:' + req.path + ' is found.'));
   });
 
   app.use(errorHandler());

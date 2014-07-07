@@ -91,11 +91,11 @@ describe('Session APIs', function() {
         .send({
           email: 'test1@test.com',
           password: 'test'
-        }).expect(401)
+        }).expect(409)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
           if (err) return done(err);
-          res.body.error.code.should.be.eql('UNAUTHORIZED');
+          res.body.error.code.should.be.eql('USER_MISMATCH');
           should.exist(res.body.error.message);
           done();
         });
@@ -107,11 +107,11 @@ describe('Session APIs', function() {
         .send({
           email: 'test@test.com',
           password: 'test1'
-        }).expect(401)
+        }).expect(409)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
           if (err) return done(err);
-          res.body.error.code.should.be.eql('UNAUTHORIZED');
+          res.body.error.code.should.be.eql('PASSWORD_MISMATCH');
           should.exist(res.body.error.message);
           done();
         });
@@ -149,7 +149,7 @@ describe('Session APIs', function() {
         .expect('Content-Type', /json/)
         .end(function(err, res) {
           if (err) return done(err);
-          res.body.error.code.should.be.eql('UNAUTHORIZED');
+          res.body.error.code.should.be.eql('AUTHENTICATION_REQUIRED');
           should.exist(res.body.error.message);
           done();
         });

@@ -18,6 +18,7 @@
   "globals": {
   },
   "predef": [
-    "localrequire"
+    "localrequire",
+    "Errors"
   ]
 }

@@ -4,7 +4,7 @@ var jwt = require('jsonwebtoken'),
     User = localrequire.model('user'),
     config = localrequire.config();
 
-exports.me = function(req, res, next) {
+exports.me = function(req, res) {
   var me = req.me;
 
   res.finish({
@@ -25,7 +25,6 @@ exports.login = function(req, res, next) {
       expiresInMinutes: config.token.expiresInMinutes
     });
 
-    res.setHeader('Auth-Token', token);
     res.setToken(token);
 
     res.finish({
@@ -36,6 +35,6 @@ exports.login = function(req, res, next) {
   });
 };
 
-exports.logout = function(req, res, next) {
+exports.logout = function(req, res) {
   res.finish();
 };

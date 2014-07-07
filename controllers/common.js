@@ -1,6 +1,6 @@
 'use strict';
 
-exports.status = function(req, res, next) {
+exports.status = function(req, res) {
   res.finish({
     status: 'OK'
   });

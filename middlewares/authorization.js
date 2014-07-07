@@ -1,17 +1,12 @@
 'use strict';
 
-var hasAuthorization = exports.hasAuthorization = function(checker, message) {
+var hasAuthorization = exports.hasAuthorization = function(checker, err) {
   return function(req, res, next) {
-    if (!checker(req)) {
-      return next(Error.new({
-        code: 'FORBIDDEN',
-        message: message || 'User is not authorized.'
-      }));
-    }
+    if (!checker(req)) return next(err);
     next();
   };
 };
 
 exports.isSelf = hasAuthorization(function(req) {
   return req.params.user === req.login.id;
-}, 'You are trying to update/delete other user, not you.');
+}, Errors.NotSelf('You are trying to update/delete other user, not you.'));

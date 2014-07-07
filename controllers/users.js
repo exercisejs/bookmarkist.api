@@ -38,7 +38,6 @@ exports.create = function(req, res, next) {
       expiresInMinutes: config.token.expiresInMinutes
     });
 
-    res.setHeader('Auth-Token', token);
     res.setToken(token);
 
     res.finish({

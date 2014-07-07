@@ -1,11 +1,6 @@
 'use strict';
 
-var path = require('path');
-
-var rootPath = path.normalize(__dirname + '/../../..');
-
 module.exports = {
-  root: rootPath,
   ip: 'localhost',
   port: process.env.PORT || 9000,
   mongo: {
@@ -17,6 +12,6 @@ module.exports = {
   },
   token: {
     secret: 'bookmarkist',
-    expiresInMinutes: 1000
+    expiresInMinutes: 60 * 24 * 30
   }
 };

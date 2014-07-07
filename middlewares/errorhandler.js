@@ -2,24 +2,25 @@
 
 var status = function(err) {
   switch (err.code) {
-    case 'UNAUTHORIZED':
+    case 'AUTHENTICATION_REQUIRED':
+    case 'AUTHENTICATION_INVALID':
+    case 'TOKEN_INVALID':
+    case 'TOKEN_EXPIRED':
       return 401;
-    case 'FORBIDDEN':
+    case 'NOT_SELF':
       return 403;
-    case 'NOT_FOUND':
+    case 'USER_NOT_FOUND':
+    case 'API_NOT_FOUND':
       return 404;
-    case 'DUPLICATED':
+    case 'USER_DUPLICATED':
+    case 'USER_MISMATCH':
+    case 'PASSWORD_MISMATCH':
       return 409;
-    case 'REQUIRED':
-    case 'IMMUTABLE':
+    case 'FIELD_REQUIRED':
+    case 'FIELD_INVALID':
       return 422;
-    case 'FORMAT_INVALID':
-      return 400;
     default:
-      if (process.env.NODE_ENV === 'test') {
-        console.log(err);
-        console.log(err.stack);
-      }
+      console.error(err.stack);
       return 500;
   }
 };

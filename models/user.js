@@ -37,10 +37,7 @@ exports.read = function(id) {
     if (user) {
       return user.toJSON();
     } else {
-      throw Error.new({
-        code: 'NOT_FOUND',
-        message: 'User:' + id + ' is not found.'
-      });
+      throw Errors.UserNotFound('User:' + id + ' is not found.');
     }
   });
 };
@@ -52,16 +49,10 @@ exports.authenticate = function(email, password) {
       if (user.get('password') === password) {
         return user.toJSON();
       } else {
-        throw Error.new({
-          code: 'UNAUTHORIZED',
-          message: 'Password for user:' + email + ' is invalid.'
-        });
+        throw Errors.PasswordMismatch('Password for user:' + email + ' is invalid.');
       }
     } else {
-      throw Error.new({
-        code: 'UNAUTHORIZED',
-        message: 'User:' + email + ' is not found.'
-      });
+      throw Errors.UserMismatch('User:' + email + ' is not found.');
     }
   });
 };
@@ -71,10 +62,7 @@ exports.create = function(user) {
     var email = user.email;
     var existing = users.findWhere({ email: email });
     if (existing) {
-      throw Error.new({
-        code: 'DUPLICATED',
-        message: 'User:' + email + ' already exists.'
-      });
+      throw Errors.UserDuplicated('User:' + email + ' already exists.');
     } else {
       var id = chance.hash({ length: 24 });
       user.id = id;
@@ -92,10 +80,7 @@ exports.update = function(user) {
       existing.set(user);
       return existing.toJSON();
     } else {
-      throw Error.new({
-        code: 'NOT_FOUND',
-        message: 'User:' + id + ' is not found.'
-      });
+      throw Errors.UserNotFound('User:' + id + ' is not found.');
     }
   });
 };
@@ -107,10 +92,7 @@ exports.delete = function(id) {
       users.remove(id);
       return existing.toJSON();
     } else {
-      throw Error.new({
-        code: 'NOT_FOUND',
-        message: 'User:' + id + ' is not found.'
-      });
+      throw Errors.UserNotFound('User:' + id + ' is not found.');
     }
   });
 };

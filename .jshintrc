@@ -15,8 +15,6 @@
   "strict": true,
   "trailing": true,
   "smarttabs": true,
-  "globals": {
-  },
   "predef": [
     "localrequire",
     "Errors"

@@ -13,10 +13,10 @@ describe('User APIs', function() {
       .post('/users')
       .send({
         email: 'test@test.com',
-        password: 'test',
-        name: 'Test User',
-        phone: '010-1234-5678'
-      }).expect(200)
+        password: 't2$t',
+        name: 'Test User'
+      })
+      .expect(200)
       .expect('Content-Type', /json/)
       .expect('Auth-Token', /^.+$/)
       .end(function(err, res) {
@@ -25,8 +25,7 @@ describe('User APIs', function() {
         should.exist(res.body.user.id);
         res.body.user.should.be.containEql({
           email: 'test@test.com',
-          name: 'Test User',
-          phone: '010-1234-5678'
+          name: 'Test User'
         });
         should.exist(res.body.token);
         token = res.get('Auth-Token');
@@ -47,8 +46,7 @@ describe('User APIs', function() {
         should.exist(res.body.user.id);
         res.body.user.should.be.containEql({
           email: 'test@test.com',
-          name: 'Test User',
-          phone: '010-1234-5678'
+          name: 'Test User'
         });
         done();
       });
@@ -66,8 +64,7 @@ describe('User APIs', function() {
         should.exist(res.body.users[0].id);
         res.body.users[0].should.be.containEql({
           email: 'test@test.com',
-          name: 'Test User',
-          phone: '010-1234-5678'
+          name: 'Test User'
         });
         done();
       });
@@ -78,9 +75,7 @@ describe('User APIs', function() {
       .put('/users/' + id)
       .set('Authorization', 'Bearer ' + token)
       .send({
-        password: 'test',
-        name: 'New Test User',
-        phone: '010-9876-5432'
+        name: 'New Test User'
       }).expect(200)
       .expect('Content-Type', /json/)
       .end(function(err, res) {
@@ -89,8 +84,7 @@ describe('User APIs', function() {
         should.exist(res.body.user.id);
         res.body.user.should.be.containEql({
           email: 'test@test.com',
-          name: 'New Test User',
-          phone: '010-9876-5432'
+          name: 'New Test User'
         });
 
         request(app)
@@ -104,8 +98,7 @@ describe('User APIs', function() {
             should.exist(res.body.user.id);
             res.body.user.should.be.containEql({
               email: 'test@test.com',
-              name: 'New Test User',
-              phone: '010-9876-5432'
+              name: 'New Test User'
             });
             done();
           });
@@ -124,8 +117,7 @@ describe('User APIs', function() {
         should.exist(res.body.user.id);
         res.body.user.should.be.containEql({
           email: 'test@test.com',
-          name: 'New Test User',
-          phone: '010-9876-5432'
+          name: 'New Test User'
         });
         done();
       });

@@ -3,8 +3,6 @@
 var fs = require('fs'),
     path = require('path');
 
-var root = path.normalize(__dirname + '/..');
-
 GLOBAL.localrequire = {
   config: function() {
     return require('./config');
@@ -14,6 +12,9 @@ GLOBAL.localrequire = {
   },
   model: function(name) {
     return require('../models/' + name);
+  },
+  service: function(name) {
+    return require('../services/' + name);
   },
   controller: function(name) {
     return require('../controllers/' + name);
@@ -27,7 +28,7 @@ GLOBAL.localrequire = {
 };
 
 var traverse = function(directory, require, callback) {
-  fs.readdirSync(path.normalize(root + '/' + directory))
+  fs.readdirSync(path.join(__dirname, '..', directory))
     .forEach(function (file) {
       if (/(.*)\.(js$|coffee$)/.test(file)) {
         var module = require(file);

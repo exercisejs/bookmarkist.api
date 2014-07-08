@@ -104,7 +104,7 @@ module.exports = function (grunt) {
     mochaTest: {
       options: {
         reporter: 'spec',
-        require: 'server.js'
+        require: ['server.js', 'test/utils.js']
       },
       common: ['test/**/*common*.js'],
       user: ['test/**/*user*.js'],

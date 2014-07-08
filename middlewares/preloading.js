@@ -1,6 +1,6 @@
 'use strict';
 
-var User = localrequire.model('user');
+var User = localrequire.service('user');
 
 exports.requiresMe = function(req, res, next) {
   User.read(req.login.id)

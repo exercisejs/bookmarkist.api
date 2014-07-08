@@ -14,16 +14,18 @@
   "unused": true,
   "strict": true,
   "trailing": true,
+  "expr": true,
   "smarttabs": true,
-  "globals": {
-  },
   "predef": [
     "localrequire",
+    "Errors",
     "describe",
     "before",
     "beforeEach",
     "after",
     "afterEach",
-    "it"
+    "it",
+    "xdescribe",
+    "xit"
   ]
 }

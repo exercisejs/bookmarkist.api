@@ -70,19 +70,37 @@ function PasswordMismatchError(message) {
 }
 PasswordMismatchError.prototype = new Error();
 
-function FieldRequiredError(message) {
+function FieldRequiredError(field, message) {
   this.name = 'FieldRequiredError';
   this.code = 'FIELD_REQUIRED';
+  this.field = field;
   this.message = message || '';
 }
 FieldRequiredError.prototype = new Error();
 
-function FieldInvalidError(message) {
+function FieldInvalidError(field, message) {
   this.name = 'FieldInvalidError';
   this.code = 'FIELD_INVALID';
+  this.field = field;
   this.message = message || '';
 }
 FieldInvalidError.prototype = new Error();
+
+function ParamRequiredError(param, message) {
+  this.name = 'ParamRequiredError';
+  this.code = 'PARAM_REQUIRED';
+  this.param = param;
+  this.message = message || '';
+}
+ParamRequiredError.prototype = new Error();
+
+function ParamInvalidError(param, message) {
+  this.name = 'ParamInvalidError';
+  this.code = 'PARAM_INVALID';
+  this.param = param;
+  this.message = message || '';
+}
+ParamInvalidError.prototype = new Error();
 
 GLOBAL.Errors = {
   AuthenticationRequired: function(message) {
@@ -115,10 +133,16 @@ GLOBAL.Errors = {
   PasswordMismatch: function(message) {
     return new PasswordMismatchError(message);
   },
-  FieldRequired: function(message) {
-    return new FieldRequiredError(message);
+  FieldRequired: function(field, message) {
+    return new FieldRequiredError(field, message);
   },
-  FieldInvalid: function(message) {
-    return new FieldInvalidError(message);
+  FieldInvalid: function(field, message) {
+    return new FieldInvalidError(field, message);
   },
+  ParamRequired: function(param, message) {
+    return new ParamRequiredError(param, message);
+  },
+  ParamInvalid: function(param, message) {
+    return new ParamInvalidError(param, message);
+  }
 };

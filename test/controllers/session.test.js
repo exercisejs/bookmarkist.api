@@ -13,9 +13,8 @@ var create = function() {
       .post('/users')
       .send({
         email: 'test@test.com',
-        password: 'test',
-        name: 'Test User',
-        phone: '010-1234-5678'
+        password: 't2$t',
+        name: 'Test User'
       }).expect(200)
       .expect('Content-Type', /json/)
       .expect('Auth-Token', /^.+$/)
@@ -25,8 +24,7 @@ var create = function() {
         should.exist(res.body.user.id);
         res.body.user.should.be.containEql({
           email: 'test@test.com',
-          name: 'Test User',
-          phone: '010-1234-5678'
+          name: 'Test User'
         });
         should.exist(res.body.token);
         token = res.get('Auth-Token');
@@ -49,8 +47,7 @@ var remove = function() {
         should.exist(res.body.user.id);
         res.body.user.should.be.containEql({
           email: 'test@test.com',
-          name: 'Test User',
-          phone: '010-1234-5678'
+          name: 'Test User'
         });
         done();
       });
@@ -66,7 +63,7 @@ describe('Session APIs', function() {
         .post('/session')
         .send({
           email: 'test@test.com',
-          password: 'test'
+          password: 't2$t'
         }).expect(200)
         .expect('Content-Type', /json/)
         .expect('Auth-Token', /^.+$/)
@@ -76,8 +73,7 @@ describe('Session APIs', function() {
           should.exist(res.body.user.id);
           res.body.user.should.be.containEql({
             email: 'test@test.com',
-            name: 'Test User',
-            phone: '010-1234-5678'
+            name: 'Test User'
           });
           should.exist(res.body.token);
           token = res.get('Auth-Token');
@@ -90,7 +86,7 @@ describe('Session APIs', function() {
         .post('/session')
         .send({
           email: 'test1@test.com',
-          password: 'test'
+          password: 't2$t'
         }).expect(409)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
@@ -106,7 +102,7 @@ describe('Session APIs', function() {
         .post('/session')
         .send({
           email: 'test@test.com',
-          password: 'test1'
+          password: 't2$t1'
         }).expect(409)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
@@ -135,8 +131,7 @@ describe('Session APIs', function() {
           should.exist(res.body.user.id);
           res.body.user.should.be.containEql({
             email: 'test@test.com',
-            name: 'Test User',
-            phone: '010-1234-5678'
+            name: 'Test User'
           });
           done();
         });

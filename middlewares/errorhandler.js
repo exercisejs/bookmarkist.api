@@ -18,6 +18,8 @@ var status = function(err) {
       return 409;
     case 'FIELD_REQUIRED':
     case 'FIELD_INVALID':
+    case 'REQUIRED_PARAM':
+    case 'PARAM_INVALID':
       return 422;
     default:
       console.error(err.stack);

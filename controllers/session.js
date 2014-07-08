@@ -1,7 +1,7 @@
 'use strict';
 
 var jwt = require('jsonwebtoken'),
-    User = localrequire.model('user'),
+    User = localrequire.service('user'),
     config = localrequire.config();
 
 exports.me = function(req, res) {
@@ -30,7 +30,8 @@ exports.login = function(req, res, next) {
     res.finish({
       user: user
     });
-  }).catch(function(err) {
+  })
+  .catch(function(err) {
     next(err);
   });
 };

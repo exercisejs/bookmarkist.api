@@ -2,7 +2,8 @@
 
 var users = localrequire.controller('users'),
     authentication = localrequire.middleware('authentication'),
-    authorization = localrequire.middleware('authorization');
+    authorization = localrequire.middleware('authorization'),
+    preloading = localrequire.middleware('preloading');
 
 module.exports = function(app) {
   app.route('/users')
@@ -22,11 +23,13 @@ module.exports = function(app) {
     .put(
       authentication.requiresLogin,
       authorization.isSelf,
+      preloading.requiresUser,
       users.update
     )
     .delete(
       authentication.requiresLogin,
       authorization.isSelf,
+      preloading.requiresUser,
       users.delete
     );
 };

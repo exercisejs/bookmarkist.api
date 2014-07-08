@@ -1,98 +1,105 @@
 'use strict';
 
-var Q = require('q'),
-  Backbone = require('backbone'),
-  _ = require('lodash'),
-  Chance = require('chance');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    crypto = require('crypto'),
+    common = require('./common');
 
-var chance = new Chance();
-
-var User = Backbone.Model.extend({
-  toJSON: function() {
-    return this.omit('password');
+var UserSchema = new Schema({
+  email: {
+    type: String,
+    index: { unique: true },
+    lowercase: true
+  },
+  salt: String,
+  hashed_password: String,
+  name: String,
+  description: String,
+  photo: String,
+  created_at: {
+    type: Date,
+    default: Date.now,
+    index: true
+  },
+  last_logged_in: Date,
+  email_validated: Boolean
+}, {
+  toJSON: {
+    virtuals: true,
+    getters: true
+  },
+  toObject: {
+    virtuals: true,
+    getters: true
   }
 });
 
-var Users = Backbone.Collection.extend({
-  model: User
-});
-
-var users = new Users();
-
-exports.list = function(options) {
-  return Q.fcall(function() {
-    var offset = options.offset;
-    var limit = options.limit ? parseInt(options.limit) : undefined;
-
-    var start = offset ? users.indexOf(users.get(offset)) + 1 : 0;
-    var end = limit ? start + limit : users.length;
-
-    return _.invoke(users.slice(start, end), 'toJSON');
+UserSchema
+  .virtual('password')
+  .set(function(password) {
+    this._password = password;
+    this.salt = this.makeSalt();
+    this.hashed_password = this.encryptPassword(password);
+  })
+  .get(function() {
+    return this._password;
   });
-};
 
-exports.read = function(id) {
-  return Q.fcall(function() {
-    var user = users.get(id);
-    if (user) {
-      return user.toJSON();
-    } else {
-      throw Errors.UserNotFound('User:' + id + ' is not found.');
+UserSchema
+  .virtual('has_photo')
+  .get(function() {
+    return !!this.photo;
+  });
+
+UserSchema
+  .pre('save', function(next) {
+    if (!common.validatePresenceOf(this.email)) {
+      return next(Errors.FieldRequired('email', 'Email is required.'));
     }
+
+    if (!common.validateEmail(this.email)) {
+      return next(Errors.FieldInvalid('email', 'Email format is not valid.'));
+    }
+
+    next();
+  })
+  .pre('save', function(next) {
+    if (!common.validatePresenceOf(this.hashed_password)) {
+      return next(Errors.FieldRequired('password', 'Password is required.'));
+    }
+
+    if (!common.validatePresenceOf(this._password)) {
+      return next();
+    }
+
+    if (!common.validatePassword(this._password)) {
+      return next(Errors.FieldInvalid('password', 'Password format is not valid.'));
+    }
+
+    next();
+  })
+  .pre('save', function(next) {
+    if (!common.validatePresenceOf(this.name)) {
+      return next(Errors.FieldRequired('name', 'Name is required.'));
+    }
+
+    next();
   });
+
+UserSchema.methods = {
+  authenticate: function(plainText) {
+    return this.encryptPassword(plainText) === this.hashed_password;
+  },
+
+  makeSalt: function() {
+    return crypto.randomBytes(16).toString('base64');
+  },
+
+  encryptPassword: function(password) {
+    if (!password || !this.salt) return '';
+    var salt = new Buffer(this.salt, 'base64');
+    return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+  }
 };
 
-exports.authenticate = function(email, password) {
-  return Q.fcall(function() {
-    var user = users.findWhere({ email: email });
-    if (user) {
-      if (user.get('password') === password) {
-        return user.toJSON();
-      } else {
-        throw Errors.PasswordMismatch('Password for user:' + email + ' is invalid.');
-      }
-    } else {
-      throw Errors.UserMismatch('User:' + email + ' is not found.');
-    }
-  });
-};
-
-exports.create = function(user) {
-  return Q.fcall(function() {
-    var email = user.email;
-    var existing = users.findWhere({ email: email });
-    if (existing) {
-      throw Errors.UserDuplicated('User:' + email + ' already exists.');
-    } else {
-      var id = chance.hash({ length: 24 });
-      user.id = id;
-      users.add(user);
-      return users.get(id).toJSON();
-    }
-  });
-};
-
-exports.update = function(user) {
-  return Q.fcall(function() {
-    var id = user.id;
-    var existing = users.get(id);
-    if (existing) {
-      existing.set(user);
-      return existing.toJSON();
-    } else {
-      throw Errors.UserNotFound('User:' + id + ' is not found.');
-    }
-  });
-};
-
-exports.delete = function(id) {
-  return Q.fcall(function() {
-    var existing = users.get(id);
-    if (existing) {
-      users.remove(id);
-      return existing.toJSON();
-    } else {
-      throw Errors.UserNotFound('User:' + id + ' is not found.');
-    }
-  });
-};
+module.exports = mongoose.model('User', UserSchema);

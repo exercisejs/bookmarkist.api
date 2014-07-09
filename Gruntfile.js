@@ -108,7 +108,13 @@ module.exports = function (grunt) {
       },
       common: ['test/**/*common*.js'],
       user: ['test/**/*user*.js'],
-      session: ['test/**/*session*.js']
+      session: ['test/**/*session*.js'],
+      model: ['test/models/**/*.js'],
+      'model.user': ['test/models/*user*.js'],
+      service: ['test/services/**/*.js'],
+      'service.user': ['test/services/*user*.js'],
+      controller: ['test/controllers/**/*.js'],
+      'controller.user': ['test/controllers/*user*.js']
     },
 
     env: {
@@ -140,11 +146,12 @@ module.exports = function (grunt) {
     'concurrent:debug'
   ]);
 
-  grunt.registerTask('test', function(target) {
+  grunt.registerTask('test', function(first, second) {
+    var target = first ? ':' + (second ? first + '.' + second : first) : '';
     return grunt.task.run([
       'newer:jshint',
       'env:test',
-      'mochaTest' + (target ? ':' + target : '')
+      'mochaTest' + target
     ]);
   });
 
